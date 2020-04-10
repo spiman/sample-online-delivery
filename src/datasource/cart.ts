@@ -17,7 +17,7 @@ const cartSchema = new Schema({
 });
 
 export type CartDocument = Document & {
-    items: Array<any>
+    items: Array<CartItemDocument>
 };
 
 export const MongoCart: Model<CartDocument, {}> = model<CartDocument>('Cart', cartSchema);
