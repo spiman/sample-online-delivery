@@ -1,0 +1,102 @@
+FORMAT: 1A
+
+# Desquared Online Delivery API
+
+# Group Menu
+
+## Menu [GET /menu{?currency}]
++ Parameters
+  + currency (string, optional) - Requested Currency ISO Code (Supported Values : EUR, USD), Default is EUR
+
++ Response 200 (application/json)
+  + Attributes (Menu)
+
++ Response 400 (application/json)
+  + Attributes (Error)
+
+# Group Cart
+
+## Create Cart [POST /carts]
++ Response 201 (application/json)
+
+    + Headers
+      Location: /carts/0000-0000-0000-0000
+
+## Retrieve Cart [GET /carts/{id}]
++ Parameters
+  + id (string, required) - Cart ID
+
++ Response 200 (application/json)
+  + Attributes (Cart)
+
++ Response 404 (application/json)
+  + Attributes (Error)
+
+## Cart Items [/carts/{id}/items]
++ Parameters
+  + id (string, required) - Cart ID
+
+### Add Item to cart [POST]
++ Request (application/json)
+  + Attributes (CartItem)
+
++ Response 202
+
++ Response 400 (application/json)
+  + Attributes (Error)
+
++ Response 404 (application/json)
+  + Attributes (Error)
+
+### Remove Item From Cart [DELETE]
++ Request (application/json)
+  + Attributes (CartItem)
+
++ Response 202
+
++ Response 400 (application/json)
+  + Attributes (Error)
+
++ Response 404 (application/json)
+  + Attributes (Error)
+
+# Group Orders [/orders]
+
+## Submit Order [POST]
++ Request (application/json)
+  + Attributes (Cart)
+
++ Response 201
+
++ Response 400 (application/json)
+  + Attributes (Error)
+
+## List Orders [GET]
++ Response 200 (application/json)
+  + Attributes (array[Cart])
+
+## Data Structures
+
+### Error
++ message (string)
+
+<!-- this is an oversimplification of a real world scenario, menu categories should be a separate entity configurable by each merchant -->
+### Menu
++ appetizers (array[MenuItem])
++ salads (array[MenuItem])
++ mains (array[MenuItem])
++ drinks (array[MenuItem])
+
+### MenuItem
++ id (string)
++ name (string)
++ description (string)
++ price (number)
+
+### Cart
++ id (string)
++ items (array[CartItem])
+
+### CartItem
++ itemId (string)
++ quantity (number)

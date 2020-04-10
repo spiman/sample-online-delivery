@@ -1,0 +1,26 @@
+{
+  "name": "desquared-online-delivery",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "Spyros Mandekis",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf ./dist ./public",
+    "docs": "mkdir -p public && aglio -i blueprint.apib -o public/index.html",
+    "test": "tape test/**/*",
+    "compile": "tsc",
+    "build": "yarn clean && yarn docs && yarn compile",
+    "start": "NODE_ENV=development nodemon -w src -e ts --exec 'ts-node src/index.ts'"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.7"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.1",
+    "nodemon": "^2.0.3",
+    "tape": "^4.13.2",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
+  }
+}
