@@ -7,22 +7,28 @@ const cartItemSchema = new Schema({
     itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem', required: true },
     quantity: { type: Number, min: 1, required: true },
     comment: String
-});
+}, { timestamps: true });
 
 export type CartItemDocument = Document & {
     itemId: string,
     quantity: number,
-    comment?: string
+    comment?: string,
+    createdAt: number,
+    updatedAt: number
 };
 
 const MongoCartItem: Model<CartItemDocument, {}> = model<CartItemDocument>('CartItem', cartItemSchema);
 
 const cartSchema = new Schema({
+    submitted: { type: Boolean, default: false },
     items: [cartItemSchema]
-});
+}, { timestamps: true });
 
 export type CartDocument = Document & {
-    items: Array<CartItemDocument>
+    submitted: boolean,
+    items: Array<CartItemDocument>,
+    createdAt: number,
+    updatedAt: number
 };
 
 export const MongoCart: Model<CartDocument, {}> = model<CartDocument>('Cart', cartSchema);
@@ -45,9 +51,20 @@ export async function addItemToCart(cartId: string, item: CartItemRequest): Prom
 }
 
 export async function updateItemInCart(cartId: string, cartItemId: string, request: CartItemRequest): Promise<CartDocument> {
+    const cart = await MongoCart.findById(cartId).orFail(new NotFoundError("cart does not exist"));
+
+    if (cart.submitted) {
+        throw new ValidationError("Cannot update an already submitted cart");
+    }
+
     //ensure requested menu item exists -- could make sense to add a layer for referential integrity on top of mongoose
     if (!!request.itemId) {
-        await getMenuItem(request.itemId).catch(e =>  { throw new ValidationError("menu item does not exist") });
+        await getMenuItem(request.itemId).catch(() => { throw new ValidationError("menu item does not exist") });
+    }
+
+    const idx = cart.items.findIndex(el => el._id == cartItemId)
+    if (idx === -1) {
+        throw new NotFoundError("cart item does not exist")
     }
 
     const patch = Object.keys(request).reduce((acc, el) => {
@@ -59,12 +76,15 @@ export async function updateItemInCart(cartId: string, cartItemId: string, reque
         { _id: cartId, 'items._id': cartItemId },
         { $set: patch },
         { new: true }
-    ).orFail(new NotFoundError("item does not exist"));
+    );
 }
 
-export async function removeItemFromCart(cartId: string, itemId: string) {
+export async function removeItemFromCart(cartId: string, cartItemId: string) {
     const cart = await getCart(cartId);
-    const item = await cart.items.find(el => el._id == itemId)
+    if (cart.submitted) {
+        throw new ValidationError("cart has been submitted");
+    }
+    const item = await cart.items.find(el => el._id == cartItemId)
     if (!item) {
         throw new NotFoundError("cart item does not exist");
     }

@@ -1,10 +1,11 @@
 import * as request from 'supertest';
-import app from "../src";
-import { MenuResponse, MenuItemCategory } from "../src/domain/menu";
+import app from '../src';
 import { expect } from 'chai';
 import * as mongoose from 'mongoose';
+import * as moment from 'moment';
+import config from '../src/config';
+import { MenuResponse, MenuItemCategory } from "../src/domain/menu";
 import { MongoCurrencyRate } from '../src/datasource/rate';
-import moment = require("moment");
 import { Currency } from "../src/domain/currency";
 import { MongoMenuItem } from "../src/datasource/menu";
 
@@ -13,7 +14,7 @@ const ObjectId = mongoose.Types.ObjectId
 describe("GET /menu", () => {
 
     before(async () => {
-        await mongoose.connect('mongodb://localhost:27017/desquared', { useNewUrlParser: true });
+        await mongoose.connect(config.get('mongo:uri'), config.get('mongo:options'));
     })
 
     beforeEach(async () => {

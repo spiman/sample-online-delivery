@@ -1,7 +1,8 @@
 import * as request from 'supertest';
 import * as mongoose from "mongoose";
 import { MongoCart } from "../src/datasource/cart";
-import app from "../src";
+import app from '../src';
+import config from '../src/config';
 import { expect } from 'chai';
 import { MongoMenuItem } from '../src/datasource/menu';
 import { MenuItemCategory } from "../src/domain/menu";
@@ -12,19 +13,19 @@ const ObjectId = mongoose.Types.ObjectId;
 describe('carts', () => {
 
     before(async () => {
-        await mongoose.connect('mongodb://localhost:27017/desquared', { useNewUrlParser: true });
-    })
+        await mongoose.connect(config.get('mongo:uri'), config.get('mongo:options'));
+    });
 
     beforeEach(async () => {
         await Promise.all([
             MongoCart.deleteMany({}),
             MongoMenuItem.deleteMany({}),
         ]);
-    })
+    });
 
     after(async () => {
         await mongoose.connection.close();
-    })
+    });
 
     describe('POST /carts', () => {
         it("should create an empty cart and redirect to its location", async () => {
@@ -33,7 +34,7 @@ describe('carts', () => {
             expect(status).to.equal(201)
             expect(headers.location).to.match(/\/carts\/[0-9a-f]{24}/)
         });
-    })
+    });
 
     describe('GET /carts', () => {
         it('should respond with not found if id is malformed', async () => {
@@ -139,6 +140,21 @@ describe('carts', () => {
             expect(status).to.equal(404);
         });
 
+        it('should respond with bad request if attempting to delete an item from a submitted cart', async () => {
+            const menuItem = await new MongoMenuItem({
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+            }).save()
+            const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                submitted: true,
+                items: [cartItem]
+            }).save();
+
+            const { status } = await request(app).delete(`/carts/${cart._id}/items/${cartItem._id}`).send();
+            expect(status).to.equal(400);
+        });
+
         it('should remove the cart entry if the cart item does not exist', async () => {
             const menuItem = await new MongoMenuItem({
                 _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
@@ -184,7 +200,22 @@ describe('carts', () => {
 
                 expect(status).to.equal(400);
             });
-        })
+        });
+
+        it('should not update a submitted cart', async () => {
+            const menuItem = await new MongoMenuItem({
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+            }).save()
+            const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                submitted: true,
+                items: [cartItem]
+            }).save();
+
+            const { status } = await request(app).patch(`/carts/${cart._id}/items/${cartItem._id}`).send({});
+            expect(status).to.equal(400);
+        });
 
         it('should respond with the updated cart if valid', async () => {
            const menuItem = await new MongoMenuItem({
