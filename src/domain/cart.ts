@@ -2,15 +2,15 @@ import { CartDocument, CartItemDocument } from "../datasource/cart";
 
 export class CartPayload {
     id: string;
-    items: Array<CartItemPayload>;
+    items: Array<CartItemResponse>;
 
     constructor(doc: CartDocument) {
         this.id = doc._id
-        this.items = doc.items.map(el => new CartItemPayload(el))
+        this.items = doc.items.map(el => new CartItemResponse(el))
     }
 }
 
-export class CartItemPayload {
+export class CartItemRequest {
     itemId: string;
     quantity: number;
     comment: string;
@@ -19,5 +19,14 @@ export class CartItemPayload {
         this.itemId = doc.itemId
         this.quantity = doc.quantity;
         this.comment = doc.comment;
+    }
+}
+
+export class CartItemResponse extends CartItemRequest {
+    id: string;
+
+    constructor(doc: CartItemDocument) {
+        super(doc);
+        this.id = doc._id;
     }
 }

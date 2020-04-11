@@ -5,10 +5,9 @@ import app from "../src";
 import { expect } from 'chai';
 import { MongoMenuItem } from '../src/datasource/menu';
 import { MenuItemCategory } from "../src/domain/menu";
-import moment = require("moment");
+import * as moment from 'moment';
 
 const ObjectId = mongoose.Types.ObjectId;
-
 
 describe('carts', () => {
 
@@ -53,13 +52,13 @@ describe('carts', () => {
             }).save()
             const cart = await new MongoCart({
                 _id: ObjectId('2'.padStart(24, '1')),
-                items: [{ itemId: menuItem._id, quantity: 1 }]
+                items: [{ _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 }]
             }).save();
 
             const expected = {
                 id: '2'.padStart(24, '1'),
                 items: [
-                    { itemId: '1'.padStart(24, '1'), quantity: 1 }
+                    { id: '3'.padStart(24, '1'), itemId: '1'.padStart(24, '1'), quantity: 1 }
                 ]
             }
 
@@ -94,7 +93,7 @@ describe('carts', () => {
 
             const responses = await Promise.all(fixtures.map(el => {
                 return request(app).post(`/carts/${cart._id}/items`).send(el)
-            }))
+            }));
             responses.forEach((r) => expect(r.status).to.equal(400));
         });
 
@@ -117,7 +116,41 @@ describe('carts', () => {
             };
 
             expect(status).to.equal(200);
-            expect(body).to.eql(expected);
+            expect(body.id).to.equal(expected.id);
+            expect(body.items).to.have.lengthOf(1);
+            expect(body.items[0].itemId).to.equal(expected.items[0].itemId);
+            expect(body.items[0].quantity).to.equal(expected.items[0].quantity);
+            expect(body.items[0].comment).to.equal(expected.items[0].comment);
         });
+    });
+
+    describe('DELETE /carts/:cartId/items/:itemId', () => {
+        it('should respond with 404 if the cart does not exist', async () => {
+            const {status} = await request(app).delete('/carts/something/items/else').send();
+            expect(status).to.equal(404);
+        });
+
+        it('should respond with 404 if the cart item does not exist', async () => {
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                items: []
+            });
+            const {status} = await request(app).delete(`/carts/${cart._id}/items/test`).send();
+            expect(status).to.equal(404);
+        });
+
+        it('should remove the cart entry if the cart item does not exist', async () => {
+            const menuItem = await new MongoMenuItem({
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+            }).save()
+            const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                items: [cartItem]
+            }).save();
+
+            const { status } = await request(app).delete(`/carts/${cart._id}/items/${cartItem._id}`)
+            expect(status).to.equal(204);
+        })
     });
 });

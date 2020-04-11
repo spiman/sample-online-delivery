@@ -4,6 +4,7 @@ import * as config from 'nconf';
 import errorHandler from './handlers/error';
 import menuRouter from './handlers/menu';
 import cartRouter from './handlers/cart';
+import cartItemRouter from './handlers/cart_item';
 
 config.env().file('./src/config.json');
 
@@ -13,8 +14,9 @@ app.use(express.json());
 app.use(express.static('public'));
 
 mongoose.connect(config.get('mongo:uri'), { useNewUrlParser: true }).then(() => {
-  app.use('/menu', menuRouter)
-  app.use('/carts', cartRouter)
+  app.use('/menu', menuRouter);
+  app.use('/carts', cartRouter);
+  app.use('/carts/:cartId/items', cartItemRouter);
   app.use(errorHandler);
   app.listen(3000, () => {
     console.log('started')

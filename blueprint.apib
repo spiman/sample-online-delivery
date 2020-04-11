@@ -49,14 +49,28 @@ FORMAT: 1A
 + Response 404 (application/json)
   + Attributes (Error)
 
-### Remove Item From Cart [DELETE]
+## Cart Item [/carts/{cartId}/items/{itemId}]
++ Parameters
+  + cartId (string, required) - Cart ID
+  + itemId (string, required) - Cart Item ID
+
+### Update Cart Item [PATCH]
 + Request (application/json)
   + Attributes (CartItem)
 
-+ Response 204
++ Response 200 (application/json)
+  + Attributes (CartItem)
 
 + Response 400 (application/json)
   + Attributes (Error)
+
++ Response 404 (application/json)
+  + Attributes (Error)
+
+### Remove Item From Cart [DELETE]
++ Request
+
++ Response 204
 
 + Response 404 (application/json)
   + Attributes (Error)
@@ -99,6 +113,7 @@ FORMAT: 1A
 + items (array[CartItem])
 
 ### CartItem
++ id (string)
 + itemId (string)
 + quantity (number)
 + comment (string)

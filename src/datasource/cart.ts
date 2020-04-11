@@ -1,6 +1,6 @@
 import { Document, Error, Model, model, Schema, Types } from "mongoose";
 import { NotFoundError, ValidationError } from "../domain/error";
-import { CartItemPayload } from "../domain/cart";
+import { CartItemRequest, CartItemResponse } from "../domain/cart";
 import { getMenuItem, MongoMenuItem } from "./menu";
 
 const cartItemSchema = new Schema({
@@ -9,11 +9,13 @@ const cartItemSchema = new Schema({
     comment: String
 });
 
-export type CartItemDocument = {
+export type CartItemDocument = Document & {
     itemId: string,
     quantity: number,
     comment?: string
 };
+
+const MongoCartItem: Model<CartItemDocument, {}> = model<CartItemDocument>('CartItem', cartItemSchema);
 
 const cartSchema = new Schema({
     items: [cartItemSchema]
@@ -36,8 +38,18 @@ export async function getCart(id: string): Promise<CartDocument> {
     throw new NotFoundError("invalid id supplied");
 }
 
-export async function addItemToCart(cartId: string, item: CartItemPayload): Promise<CartDocument> {
+export async function addItemToCart(cartId: string, item: CartItemRequest): Promise<CartDocument> {
     const [cart, _] = await Promise.all([getCart(cartId), getMenuItem(item.itemId)]);
-    cart.items.push(item);
+    cart.items.push(new MongoCartItem(item));
+    return cart.save();
+}
+
+export async function removeItemFromCart(cartId: string, itemId: string) {
+    const cart = await getCart(cartId);
+    const item = await cart.items.find(el => el._id == itemId)
+    if (!item) {
+        throw new NotFoundError("cart item does not exist");
+    }
+    item.remove();
     return cart.save();
 }
