@@ -4,10 +4,10 @@ import { Currency } from "../domain/currency";
 import * as moment from "moment";
 
 const rateSchema = new Schema({
-    date: { type: Date },
+    date: { type: Date, required: true },
     from: { type: String, enum: Object.values(Currency) },
     to: { type: String, enum: Object.values(Currency) },
-    rate: { type: Number }
+    rate: { type: Number, required: true }
 });
 
 export type CurrencyRateDocument = Document & {

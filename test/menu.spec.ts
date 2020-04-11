@@ -62,6 +62,11 @@ describe("GET /menu", () => {
         expect(body).to.eql(expected);
     })
 
+    it('should respond with 400 if an unknown currency is requested', async () => {
+        const { status } = await request(app).get('/menu?currency=GRD').send()
+        expect(status).to.equal(400)
+    });
+
     it('should exchange the prices to another currency if requested', async () => {
         await MongoMenuItem.insertMany([
             { _id: ObjectId('1'.padStart(24, '1')), name: 'Cheesesteak', description: 'Kobe beef', price_eur_cents: 1000, category: MenuItemCategory.Main },

@@ -6,7 +6,7 @@ FORMAT: 1A
 
 ## Menu [GET /menu{?currency}]
 + Parameters
-  + currency (string, optional) - Requested Currency ISO Code (Supported Values : EUR, USD), Default is EUR
+  + currency (string, optional) - Requested Currency ISO Code (Supported Values : EUR, USD, GBP, CHF), Default is EUR
 
 + Response 200 (application/json)
   + Attributes (Menu)
@@ -40,7 +40,8 @@ FORMAT: 1A
 + Request (application/json)
   + Attributes (CartItem)
 
-+ Response 202
++ Response 200 (application/json)
+  + Attributes (Cart)
 
 + Response 400 (application/json)
   + Attributes (Error)
@@ -52,7 +53,7 @@ FORMAT: 1A
 + Request (application/json)
   + Attributes (CartItem)
 
-+ Response 202
++ Response 204
 
 + Response 400 (application/json)
   + Attributes (Error)

@@ -7,7 +7,8 @@
   "scripts": {
     "clean": "rm -rf ./dist ./public",
     "docs": "mkdir -p public && aglio -i blueprint.apib -o public/index.html",
-    "test": "nyc mocha -r ts-node/register --timeout 10000 test/**/* --exit",
+    "test": "mocha -r ts-node/register --timeout 10000 test/**/* --exit",
+    "coverage": "nyc yarn test",
     "compile": "tsc",
     "build": "yarn clean && yarn docs && yarn compile",
     "start": "NODE_ENV=development nodemon -w src -e ts --exec 'ts-node src/index.ts'"
@@ -15,6 +16,7 @@
   "dependencies": {
     "@types/lru-cache": "^5.1.0",
     "express": "^4.17.1",
+    "express-validator": "^6.4.0",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.7",

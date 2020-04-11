@@ -1,5 +1,6 @@
-import { Document, model, Model, Schema } from "mongoose";
+import { Document, model, Model, Schema, Types } from "mongoose";
 import { MenuItemCategory } from "../domain/menu";
+import { NotFoundError } from "../domain/error";
 
 const menuItemSchema = new Schema({
     name: { type: String, required: true },
@@ -19,4 +20,8 @@ export const MongoMenuItem: Model<MenuItemDocument, {}> = model<MenuItemDocument
 
 export async function getMenu(): Promise<Array<MenuItemDocument>> {
     return MongoMenuItem.find().lean();
+}
+
+export async function getMenuItem(id: string): Promise<MenuItemDocument> {
+    return MongoMenuItem.findById(id).orFail(new NotFoundError("could not find item"));
 }

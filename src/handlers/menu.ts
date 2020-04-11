@@ -3,15 +3,13 @@ import { getMenu, MenuItemDocument } from "../datasource/menu";
 import { MenuPayload, MenuItemPayload } from "../domain/menu";
 import { Currency } from "../domain/currency";
 import { getExchangeRate } from "../datasource/rate";
+import { ValidationError } from "../domain/error";
 
 const router = Router();
-router.get('/', async (req, res) => {
-  let currency: Currency;
-  try {
-    currency = req.query.currency as Currency || Currency.EUR;
-  } catch (e) {
-    res.status(400).json({ message: `Unknown currency ${req.params.currency}`});
-    return;
+router.get('/', async (req, res, next) => {
+  const currency = req.query.currency as Currency || Currency.EUR;
+  if (!Object.values(Currency).includes(currency)) {
+      return next(new ValidationError(`Unknown currency ${currency}`));
   }
 
   const [menu, exchangeRate] = await Promise.all([getMenu(), getExchangeRate(currency)]);

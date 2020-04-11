@@ -1,4 +1,7 @@
 import { Document, Error, Model, model, Schema, Types } from "mongoose";
+import { NotFoundError, ValidationError } from "../domain/error";
+import { CartItemPayload } from "../domain/cart";
+import { getMenuItem, MongoMenuItem } from "./menu";
 
 const cartItemSchema = new Schema({
     itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem' },
@@ -28,8 +31,13 @@ export async function createCart(): Promise<CartDocument> {
 
 export async function getCart(id: string): Promise<CartDocument> {
     if (Types.ObjectId.isValid(id)) {
-        return MongoCart.findById(id);
+        return MongoCart.findById(id).orFail(new NotFoundError("cart does not exist"));
     }
-    throw new Error("invalid id supplied"); //should specialize
+    throw new NotFoundError("invalid id supplied");
 }
 
+export async function addItemToCart(cartId: string, item: CartItemPayload): Promise<CartDocument> {
+    const [cart, _] = await Promise.all([getCart(cartId), getMenuItem(item.itemId)]);
+    cart.items.push(item);
+    return cart.save();
+}
