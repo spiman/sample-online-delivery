@@ -98,4 +98,39 @@ describe('orders', () => {
             expect(body.items).to.eql(expected.items);
         });
     });
+
+    describe('GET /orders', () => {
+        it('should return an empty array if no carts are present', async () => {
+            const { status, body } = await request(app).get('/orders').send();
+            expect(status).to.equal(200);
+            expect(body).to.eql([]);
+        });
+
+        it('should return a list of orders', async () => {
+            const menuItem = await new MongoMenuItem({
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
+            }).save()
+            const order = await new MongoOrder({
+                _id: ObjectId('1'.padStart(24, '1')),
+                cartId: ObjectId('4'.padStart(24, '1')),
+                address: '221B Baker Street',
+                totalPriceEurCents: 800,
+                items: [{ _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 2 }]
+            }).save();
+
+            const { status, body } = await request(app).get('/orders').send();
+
+            const expected = [{
+                id: '1'.padStart(24, '1'),
+                address: '221B Baker Street',
+                totalPrice: 800,
+                items: [
+                    { id: '3'.padStart(24, '1'), itemId: '2'.padStart(24, '1'), quantity: 2 }
+                ]
+            }]
+
+            expect(status).to.equal(200);
+            expect(body).to.eql(expected);
+        });
+    });
 });

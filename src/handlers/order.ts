@@ -3,7 +3,7 @@ import { check, validationResult } from "express-validator";
 import { ValidationError } from "../domain/error";
 import { Currency } from "../domain/currency";
 import { OrderRequest, OrderResponse } from "../domain/order";
-import { submitOrder } from "../datasource/order";
+import { listOrders, submitOrder } from "../datasource/order";
 import { getExchangeRate } from "../datasource/rate";
 
 const router = Router();
@@ -31,5 +31,14 @@ router.post(
         }
     }
 );
+
+router.get('/', async (req, res, next) => {
+    try {
+        const orders = await listOrders();
+        res.status(200).json(orders.map(el => new OrderResponse(el)));
+    } catch (e) {
+        next(e);
+    }
+});
 
 export default router;

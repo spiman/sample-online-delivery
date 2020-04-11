@@ -2,7 +2,6 @@ import { Document, model, Model, Schema } from "mongoose";
 import { CartItemDocument, cartItemSchema, getCart } from "./cart";
 import { OrderRequest } from "../domain/order";
 import { ValidationError } from "../domain/error";
-import { Currency } from "../domain/currency";
 import { MongoMenuItem } from "./menu";
 
 export const orderSchema = new Schema({
@@ -24,6 +23,10 @@ export type OrderDocument = Document & {
 }
 
 export const MongoOrder: Model<OrderDocument, {}> = model<OrderDocument>('Order', orderSchema);
+
+export async function listOrders(): Promise<Array<OrderDocument>> {
+    return MongoOrder.find();
+}
 
 export async function submitOrder(req: OrderRequest): Promise<OrderDocument> {
    const cart = await getCart(req.cartId);
