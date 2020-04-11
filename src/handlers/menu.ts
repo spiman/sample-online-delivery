@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getMenu, MenuItemDocument } from "../datasource/menu";
-import { MenuPayload, MenuItemPayload } from "../domain/menu";
+import { MenuResponse, MenuItemResponse } from "../domain/menu";
 import { Currency } from "../domain/currency";
 import { getExchangeRate } from "../datasource/rate";
 import { ValidationError } from "../domain/error";
@@ -13,10 +13,10 @@ router.get('/', async (req, res, next) => {
   }
 
   const [menu, exchangeRate] = await Promise.all([getMenu(), getExchangeRate(currency)]);
-  const response = menu.reduce((acc: MenuPayload, el: MenuItemDocument) => {
-    acc[el.category].push(new MenuItemPayload(el, exchangeRate))
+  const response = menu.reduce((acc: MenuResponse, el: MenuItemDocument) => {
+    acc[el.category].push(new MenuItemResponse(el, exchangeRate))
     return acc;
-  }, MenuPayload());
+  }, MenuResponse());
   res.status(200).json(response);
 });
 

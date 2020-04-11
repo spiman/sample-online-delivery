@@ -135,7 +135,7 @@ describe('carts', () => {
                 _id: ObjectId('1'.padStart(24, '1')),
                 items: []
             });
-            const {status} = await request(app).delete(`/carts/${cart._id}/items/test`).send();
+            const { status } = await request(app).delete(`/carts/${cart._id}/items/test`).send();
             expect(status).to.equal(404);
         });
 
@@ -151,6 +151,63 @@ describe('carts', () => {
 
             const { status } = await request(app).delete(`/carts/${cart._id}/items/${cartItem._id}`)
             expect(status).to.equal(204);
+        });
+    });
+
+    describe('PATCH /carts/:cartId/items/:itemId', () => {
+        it('should respond with 404 for non existent cart', async () => {
+            const { status } = await request(app).patch('/carts/test/items/test').send()
+            expect(status).to.equal(404);
+        });
+
+        it('should respond with 404 for non existent item', async () => {
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                items: []
+            });
+            const { status } = await request(app).patch(`/carts/${cart._id}/items/test`).send();
+            expect(status).to.equal(404);
+        });
+
+        [{ itemId: 'whatever' }, { itemId: '7'.padStart(24, '1') }, { quantity: 0 }, { quantity: -1 }].forEach(variant => {
+            it(`should respond with bad request if payload is invalid (${JSON.stringify(variant)}))`, async () => {
+                const menuItem = await new MongoMenuItem({
+                    _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                }).save()
+                const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
+                const cart = await new MongoCart({
+                    _id: ObjectId('1'.padStart(24, '1')),
+                    items: [cartItem]
+                }).save();
+
+                const { status } = await request(app).patch(`/carts/${cart._id}/items/${cartItem._id}`).send(variant);
+
+                expect(status).to.equal(400);
+            });
         })
+
+        it('should respond with the updated cart if valid', async () => {
+           const menuItem = await new MongoMenuItem({
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+            }).save()
+            const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
+            const cart = await new MongoCart({
+                _id: ObjectId('1'.padStart(24, '1')),
+                items: [cartItem]
+            }).save();
+
+            const { status, body } = await request(app).patch(`/carts/${cart._id}/items/${cartItem._id}`)
+                .send({ quantity: 2 });
+
+            const expected = {
+                id: '1'.padStart(24, '1'),
+                items: [
+                    { id: '3'.padStart(24, '1'), itemId: '2'.padStart(24, '1'), quantity: 2 }
+                ]
+            };
+
+            expect(status).to.equal(200);
+            expect(body).to.eql(expected);
+        });
     });
 });

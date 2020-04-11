@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 import app from "../src";
-import { MenuPayload, MenuItemCategory } from "../src/domain/menu";
+import { MenuResponse, MenuItemCategory } from "../src/domain/menu";
 import { expect } from 'chai';
 import * as mongoose from 'mongoose';
 import { MongoCurrencyRate } from '../src/datasource/rate';
@@ -30,7 +30,7 @@ describe("GET /menu", () => {
     it("should return an empty menu if nothing present", async () => {
         const { body } = await request(app).get('/menu').send()
 
-        const expected: MenuPayload = {
+        const expected: MenuResponse = {
             appetizers: [],
             salads: [],
             mains: [],
@@ -48,7 +48,7 @@ describe("GET /menu", () => {
             new MongoMenuItem({ _id: ObjectId('4'.padStart(24, '1')), name: 'Chicken Parmesan', description: null, price_eur_cents: 800, category: MenuItemCategory.Main }),
         ])
 
-        const expected: MenuPayload = {
+        const expected: MenuResponse = {
             appetizers: [{ id: '1'.padStart(24, '1'), name: 'Puffy Cheeseballs', description: 'Extra puffy', price: 400 }],
             salads: [{ id: '2'.padStart(24, '1'), name: 'Caesar\'s salad', description: null, price: 500 }],
             mains: [
@@ -77,7 +77,7 @@ describe("GET /menu", () => {
             date: moment().toDate(), from: Currency.EUR, to: Currency.USD, rate: 1.2
         }).save();
 
-        const expected: MenuPayload = {
+        const expected: MenuResponse = {
             appetizers: [], salads: [], drinks: [], mains: [
                 { id: '1'.padStart(24, '1'), name: 'Cheesesteak', description: 'Kobe beef', price: 1200 },
                 { id: '2'.padStart(24, '1'), name: 'Chicken', description: null, price: 600 }

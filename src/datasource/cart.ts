@@ -1,11 +1,11 @@
-import { Document, Error, Model, model, Schema, Types } from "mongoose";
+import { Document, Model, model, Schema, Types } from "mongoose";
 import { NotFoundError, ValidationError } from "../domain/error";
-import { CartItemRequest, CartItemResponse } from "../domain/cart";
-import { getMenuItem, MongoMenuItem } from "./menu";
+import { CartItemRequest } from "../domain/cart";
+import { getMenuItem } from "./menu";
 
 const cartItemSchema = new Schema({
-    itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem' },
-    quantity: { type: Number, min: 1 },
+    itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem', required: true },
+    quantity: { type: Number, min: 1, required: true },
     comment: String
 });
 
@@ -42,6 +42,24 @@ export async function addItemToCart(cartId: string, item: CartItemRequest): Prom
     const [cart, _] = await Promise.all([getCart(cartId), getMenuItem(item.itemId)]);
     cart.items.push(new MongoCartItem(item));
     return cart.save();
+}
+
+export async function updateItemInCart(cartId: string, cartItemId: string, request: CartItemRequest): Promise<CartDocument> {
+    //ensure requested menu item exists -- could make sense to add a layer for referential integrity on top of mongoose
+    if (!!request.itemId) {
+        await getMenuItem(request.itemId).catch(e =>  { throw new ValidationError("menu item does not exist") });
+    }
+
+    const patch = Object.keys(request).reduce((acc, el) => {
+        acc['items.$.' + el] = request[el];
+        return acc;
+    }, {});
+
+    return MongoCart.findOneAndUpdate(
+        { _id: cartId, 'items._id': cartItemId },
+        { $set: patch },
+        { new: true }
+    ).orFail(new NotFoundError("item does not exist"));
 }
 
 export async function removeItemFromCart(cartId: string, itemId: string) {

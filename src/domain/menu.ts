@@ -5,21 +5,21 @@
 
 import { MenuItemDocument } from "../datasource/menu";
 
-export interface MenuPayload {
-    appetizers: Array<MenuItemPayload>;
-    salads: Array<MenuItemPayload>;
-    mains: Array<MenuItemPayload>;
-    drinks: Array<MenuItemPayload>;
+export interface MenuResponse {
+    appetizers: Array<MenuItemResponse>;
+    salads: Array<MenuItemResponse>;
+    mains: Array<MenuItemResponse>;
+    drinks: Array<MenuItemResponse>;
 }
 
-export const MenuPayload: () => MenuPayload = () => ({
+export const MenuResponse: () => MenuResponse = () => ({
     appetizers: [],
     salads: [],
     mains: [],
     drinks: []
-} as MenuPayload)
+} as MenuResponse)
 
-export class MenuItemPayload {
+export class MenuItemResponse {
     id: string;
     name: string;
     description: string;

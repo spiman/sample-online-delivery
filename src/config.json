@@ -1,5 +1,9 @@
 {
   "mongo": {
-    "uri": "mongodb://localhost:27017/desquared"
+    "uri": "mongodb://localhost:27017/desquared",
+    "options": {
+      "useNewUrlParser": true,
+      "useFindAndModify": false
+    }
   }
 }

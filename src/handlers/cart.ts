@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createCart, getCart } from "../datasource/cart";
-import { CartPayload } from "../domain/cart";
+import { CartResponse } from "../domain/cart";
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res, next) => {
    try {
       const cart = await getCart(req.params.id);
-      const response = new CartPayload(cart);
+      const response = new CartResponse(cart);
       res.status(200).json(response);
    } catch (e) {
        return next(e);
