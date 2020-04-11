@@ -1,9 +1,9 @@
 import { Document, Model, model, Schema, Types } from "mongoose";
 import { NotFoundError, ValidationError } from "../domain/error";
 import { CartItemRequest } from "../domain/cart";
-import { getMenuItem } from "./menu";
+import { getMenuItem, MenuItemDocument } from "./menu";
 
-const cartItemSchema = new Schema({
+export const cartItemSchema = new Schema({
     itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem', required: true },
     quantity: { type: Number, min: 1, required: true },
     comment: String
@@ -17,9 +17,9 @@ export type CartItemDocument = Document & {
     updatedAt: number
 };
 
-const MongoCartItem: Model<CartItemDocument, {}> = model<CartItemDocument>('CartItem', cartItemSchema);
+export const MongoCartItem: Model<CartItemDocument, {}> = model<CartItemDocument>('CartItem', cartItemSchema);
 
-const cartSchema = new Schema({
+export const cartSchema = new Schema({
     submitted: { type: Boolean, default: false },
     items: [cartItemSchema]
 }, { timestamps: true });
@@ -51,7 +51,7 @@ export async function addItemToCart(cartId: string, item: CartItemRequest): Prom
 }
 
 export async function updateItemInCart(cartId: string, cartItemId: string, request: CartItemRequest): Promise<CartDocument> {
-    const cart = await MongoCart.findById(cartId).orFail(new NotFoundError("cart does not exist"));
+    const cart = await getCart(cartId);
 
     if (cart.submitted) {
         throw new ValidationError("Cannot update an already submitted cart");

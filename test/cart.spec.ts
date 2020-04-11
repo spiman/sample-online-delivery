@@ -49,7 +49,7 @@ describe('carts', () => {
 
         it('should respond with the cart contents if found', async () => {
             const menuItem = await new MongoMenuItem({
-                _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
             const cart = await new MongoCart({
                 _id: ObjectId('2'.padStart(24, '1')),
@@ -81,7 +81,7 @@ describe('carts', () => {
                 _id: ObjectId('1'.padStart(24, '1')),
             }).save();
             const item = await new MongoMenuItem({
-                _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
 
             const fixtures = [
@@ -103,7 +103,7 @@ describe('carts', () => {
                 _id: ObjectId('1'.padStart(24, '1')),
             }).save();
             const item = await new MongoMenuItem({
-                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
 
             const { body, status } = await request(app).post(`/carts/${cart._id}/items`)
@@ -142,7 +142,7 @@ describe('carts', () => {
 
         it('should respond with bad request if attempting to delete an item from a submitted cart', async () => {
             const menuItem = await new MongoMenuItem({
-                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
             const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
             const cart = await new MongoCart({
@@ -157,7 +157,7 @@ describe('carts', () => {
 
         it('should remove the cart entry if the cart item does not exist', async () => {
             const menuItem = await new MongoMenuItem({
-                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
             const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
             const cart = await new MongoCart({
@@ -188,7 +188,7 @@ describe('carts', () => {
         [{ itemId: 'whatever' }, { itemId: '7'.padStart(24, '1') }, { quantity: 0 }, { quantity: -1 }].forEach(variant => {
             it(`should respond with bad request if payload is invalid (${JSON.stringify(variant)}))`, async () => {
                 const menuItem = await new MongoMenuItem({
-                    _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                    _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
                 }).save()
                 const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
                 const cart = await new MongoCart({
@@ -204,7 +204,7 @@ describe('carts', () => {
 
         it('should not update a submitted cart', async () => {
             const menuItem = await new MongoMenuItem({
-                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
             const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
             const cart = await new MongoCart({
@@ -219,7 +219,7 @@ describe('carts', () => {
 
         it('should respond with the updated cart if valid', async () => {
            const menuItem = await new MongoMenuItem({
-                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer
+                _id: ObjectId('2'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer
             }).save()
             const cartItem = { _id: ObjectId('3'.padStart(24, '1')), itemId: menuItem._id, quantity: 1 };
             const cart = await new MongoCart({

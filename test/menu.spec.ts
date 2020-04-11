@@ -43,10 +43,10 @@ describe("GET /menu", () => {
 
     it('should return the menu partitioned by category', async () => {
         await MongoMenuItem.insertMany([
-            new MongoMenuItem({ _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', price_eur_cents: 400, category: MenuItemCategory.Appetizer }),
-            new MongoMenuItem({ _id: ObjectId('2'.padStart(24, '1')), name: 'Caesar\'s salad', description: null, price_eur_cents: 500, category: MenuItemCategory.Salad }),
-            new MongoMenuItem({ _id: ObjectId('3'.padStart(24, '1')), name: 'Cheesesteak', description: 'Kobe beef', price_eur_cents: 1300, category: MenuItemCategory.Main }),
-            new MongoMenuItem({ _id: ObjectId('4'.padStart(24, '1')), name: 'Chicken Parmesan', description: null, price_eur_cents: 800, category: MenuItemCategory.Main }),
+            new MongoMenuItem({ _id: ObjectId('1'.padStart(24, '1')), name: 'Puffy Cheeseballs', description: 'Extra puffy', priceEurCents: 400, category: MenuItemCategory.Appetizer }),
+            new MongoMenuItem({ _id: ObjectId('2'.padStart(24, '1')), name: 'Caesar\'s salad', description: null, priceEurCents: 500, category: MenuItemCategory.Salad }),
+            new MongoMenuItem({ _id: ObjectId('3'.padStart(24, '1')), name: 'Cheesesteak', description: 'Kobe beef', priceEurCents: 1300, category: MenuItemCategory.Main }),
+            new MongoMenuItem({ _id: ObjectId('4'.padStart(24, '1')), name: 'Chicken Parmesan', description: null, priceEurCents: 800, category: MenuItemCategory.Main }),
         ])
 
         const expected: MenuResponse = {
@@ -70,8 +70,8 @@ describe("GET /menu", () => {
 
     it('should exchange the prices to another currency if requested', async () => {
         await MongoMenuItem.insertMany([
-            { _id: ObjectId('1'.padStart(24, '1')), name: 'Cheesesteak', description: 'Kobe beef', price_eur_cents: 1000, category: MenuItemCategory.Main },
-            { _id: ObjectId('2'.padStart(24, '1')), name: 'Chicken', description: null, price_eur_cents: 500, category: MenuItemCategory.Main }
+            { _id: ObjectId('1'.padStart(24, '1')), name: 'Cheesesteak', description: 'Kobe beef', priceEurCents: 1000, category: MenuItemCategory.Main },
+            { _id: ObjectId('2'.padStart(24, '1')), name: 'Chicken', description: null, priceEurCents: 500, category: MenuItemCategory.Main }
         ]);
 
         await new MongoCurrencyRate({

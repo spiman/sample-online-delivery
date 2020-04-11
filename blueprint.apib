@@ -68,9 +68,10 @@ FORMAT: 1A
   + Attributes (Error)
 
 ### Remove Item From Cart [DELETE]
-+ Request
-
 + Response 204
+
++ Response 400 (application/json)
+  + Attributes (Error)
 
 + Response 404 (application/json)
   + Attributes (Error)
@@ -79,16 +80,17 @@ FORMAT: 1A
 
 ## Submit Order [POST]
 + Request (application/json)
-  + Attributes (Cart)
+  + Attributes (OrderRequest)
 
-+ Response 201
++ Response 200 (application/json)
+  + Attributes (OrderResponse)
 
 + Response 400 (application/json)
   + Attributes (Error)
 
 ## List Orders [GET]
 + Response 200 (application/json)
-  + Attributes (array[Cart])
+  + Attributes (array[OrderResponse])
 
 ## Data Structures
 
@@ -117,3 +119,16 @@ FORMAT: 1A
 + itemId (string)
 + quantity (number)
 + comment (string)
+
+### OrderRequest
++ cartId (string)
++ currency (string)
++ address (string)
++ comments (string)
+
+### OrderResponse
++ id (string)
++ address (string)
++ comments (string)
++ totalPrice (number)
++ items (array[CartItem])
