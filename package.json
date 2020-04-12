@@ -13,7 +13,7 @@
     "test": "NODE_ENV=test CONFIG_FILE=test/config.json mocha -r ts-node/register --timeout 10000 test/**/* --exit",
     "coverage": "nyc $npm_execpath test",
     "compile": "tsc",
-    "build": "$npm_execpath run clean && $npm_execpath run docs && $npm_execpath run compile",
+    "build": "$npm_execpath run clean && $npm_execpath run compile",
     "start": "NODE_ENV=development nodemon -w src -e ts --exec 'ts-node src/index.ts'"
   },
   "dependencies": {

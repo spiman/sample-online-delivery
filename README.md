@@ -18,6 +18,16 @@ It uses Typescript for static typing, Mongoose as a Mongo ORM, fixer.io for exch
 
 Running `node dist/index.js` will spawn the application.
 
+### or Build with docker (Optional)
+
+`docker build .` will build a docker container with the packaged application.
+
+Discovering the mongo supplied by `docker-compose` will require you to mount the container in the same network, so if using the supplied docker-compose you can do that with :
+
+```
+docker run --init --rm --network $(pwd)_default -p "3000:3000" -e MONGO__URI="mongodb://mongo:27017/desquared_delivery" <YOUR_CONTAINER>
+```
+
 ## Development
 
 `yarn start` will run a live-reload typescript server listening on port 3000 by default.
@@ -44,4 +54,4 @@ You can supply the path to your own configuration file via the `CONFIG_FILE` env
 
 ## Notes
 
-- The fixer.io API key is a throwaway, should be a secret in a real world scenario 
+- The fixer.io API key is a throwaway, should be a secret in a real world scenario

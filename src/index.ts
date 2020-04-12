@@ -13,4 +13,6 @@ mongoose.connect(config.get('mongo:uri'), config.get('mongo:options')).then(asyn
     const port = config.get('port') || 3000;
     await app.listen(port);
     console.log(`Server started on port ${port}`);
+}).catch(e => {
+    console.error(`Failed to connect to mongo at ${config.get('mongo:uri')} with error`, e);
 });
