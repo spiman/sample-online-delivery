@@ -4,6 +4,9 @@
   "main": "dist/index.js",
   "author": "Spyros Mandekis",
   "private": true,
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "clean": "rm -rf ./dist ./public",
     "docs": "mkdir -p public && aglio -i blueprint.apib -o public/index.html",
@@ -34,6 +37,7 @@
     "@types/mongoose": "^5.7.10",
     "@types/nconf": "^0.10.0",
     "@types/node": "^13.11.1",
+    "aglio": "^2.3.0",
     "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "nodemon": "^2.0.3",

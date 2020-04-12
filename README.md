@@ -4,7 +4,15 @@ Express/Node.js RESTful JSON API for a simplified online delivery application ba
 
 It uses Typescript for static typing, Mongoose as a Mongo ORM, fixer.io for exchange rates, API Blueprint for documentation.
 
+## Requirements
+
+- Node.js (v10+)
+- MongoDB (or Docker)
+- Preferrably a *nix environment
+
 ## Build
+
+`yarn` will fetch all dependencies.
 
 `yarn build` (or `npm run build`) will compile all typescript files to javascript.
 
