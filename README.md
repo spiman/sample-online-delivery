@@ -41,3 +41,7 @@ Make sure you have a mongo server running. You can spawn one with the docker-com
 The application uses the config.json file found at the directory level where it is ran.
 
 You can supply the path to your own configuration file via the `CONFIG_FILE` env variable.
+
+## Notes
+
+- The fixer.io API key is a throwaway, should be a secret in a real world scenario 
