@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import * as mongoose from "mongoose";
 import { MongoCart } from "../src/datasource/cart";
-import app from '../src';
+import app from '../src/server';
 import config from '../src/config';
 import { expect } from 'chai';
 import { MongoMenuItem } from '../src/datasource/menu';

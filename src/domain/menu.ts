@@ -29,7 +29,7 @@ export class MenuItemResponse {
         this.id = doc._id;
         this.name = doc.name;
         this.description = doc.description;
-        this.price = doc.priceEurCents * exchangeRate;
+        this.price = Number((doc.priceEurCents * (exchangeRate * 100) / 10000).toFixed(2));
     }
 }
 

@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import app from '../src';
+import app from '../src/server';
 import { expect } from 'chai';
 import * as mongoose from 'mongoose';
 import * as moment from 'moment';

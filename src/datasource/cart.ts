@@ -1,7 +1,7 @@
-import { Document, Model, model, Schema, Types } from "mongoose";
-import { NotFoundError, ValidationError } from "../domain/error";
-import { CartItemRequest } from "../domain/cart";
-import { getMenuItem, MenuItemDocument } from "./menu";
+import { Document, Model, model, Schema, Types } from 'mongoose';
+import { NotFoundError, ValidationError } from '../domain/error';
+import { CartItemRequest } from '../domain/cart';
+import { getMenuItem, MenuItemDocument } from './menu';
 
 export const cartItemSchema = new Schema({
     itemId: { type: Schema.Types.ObjectId , ref: 'MenuItem', required: true },

@@ -6,5 +6,9 @@
       "useUnifiedTopology": true,
       "useFindAndModify": false
     }
+  },
+  "fixer": {
+    "baseUrl": "http://data.fixer.io/api/",
+    "key": "03daa1a9d3306e4970ea479f9b9e267f"
   }
 }

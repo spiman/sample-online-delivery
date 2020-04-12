@@ -1,7 +1,10 @@
 import { Document, model, Model, Schema } from "mongoose";
 import * as Cache from "lru-cache";
-import { Currency } from "../domain/currency";
+import { Currency, ExchangeRate } from "../domain/currency";
 import * as moment from "moment";
+import { BulkWriteResult } from "mongodb";
+
+const debug = require('debug')('datasource:rate');
 
 const rateSchema = new Schema({
     date: { type: Date, required: true },
@@ -23,6 +26,18 @@ const exchangeCache = new Cache<string, number>({
     max: Object.keys(Currency).length * 2,
     maxAge: 24 * 60 * 60
 });
+
+export async function upsertRates(rates: Array<ExchangeRate>): Promise<BulkWriteResult> {
+    const { result } = await MongoCurrencyRate.bulkWrite(rates.map(r => ({
+        updateOne: {
+            filter: { date: r.date, from: r.from, to: r.to },
+            update: { rate: r.rate },
+            upsert: true
+        }
+    })));
+    debug(result);
+    return result;
+}
 
 export async function getExchangeRate(to: Currency, from: Currency = Currency.EUR): Promise<number> {
     if (from === to) { return 1; }

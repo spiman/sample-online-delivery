@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import * as mongoose from 'mongoose';
 import { expect } from 'chai';
-import app from '../src';
+import app from '../src/server';
 import config from '../src/config';
 import { MongoMenuItem } from "../src/datasource/menu";
 import { MenuItemCategory } from "../src/domain/menu";

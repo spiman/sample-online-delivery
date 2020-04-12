@@ -1,4 +1,4 @@
-import { NotFoundError } from "../domain/error";
+import { NotFoundError, ValidationError } from "../domain/error";
 
 const debug = require('debug')('api:error')
 
@@ -10,10 +10,10 @@ export default function (err, req, res, next) {
             break;
         case 'ValidationError':
             debug('failed with validation error', err);
-            res.status(400).send();
+            res.status(400).json({ errors: err.violations });
             break;
         default:
             console.error(err); //should be a logger omitting now
-            res.status(500).send();
+            next(err); //let the default express handler handle it
     }
 }

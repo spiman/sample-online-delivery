@@ -35,7 +35,11 @@ router.post(
 router.get('/', async (req, res, next) => {
     try {
         const orders = await listOrders();
-        res.status(200).json(orders.map(el => new OrderResponse(el)));
+
+        const currency = Currency.parse(req.query.currency?.toString() || 'EUR');
+        const rate = await getExchangeRate(currency)
+
+        res.status(200).json(orders.map(el => new OrderResponse(el, rate)));
     } catch (e) {
         next(e);
     }

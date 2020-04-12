@@ -10,32 +10,35 @@
     "test": "mocha -r ts-node/register --timeout 10000 test/**/* --exit",
     "coverage": "nyc $npm_execpath test",
     "compile": "tsc",
-    "build": "$npm_execpath run clean && $npm_execpath run docs && $npm_execpath compile",
+    "build": "$npm_execpath run clean && $npm_execpath run docs && $npm_execpath run compile",
     "start": "NODE_ENV=development nodemon -w src -e ts --exec 'ts-node src/index.ts'"
   },
   "dependencies": {
-    "@types/lru-cache": "^5.1.0",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
+    "got": "^10.7.0",
     "lru-cache": "^5.1.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.7",
     "nconf": "^0.10.0",
-    "supertest": "^4.0.2"
+    "node-schedule": "^1.3.2"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/express": "^4.17.6",
+    "@types/got": "^9.6.9",
+    "@types/lru-cache": "^5.1.0",
     "@types/mocha": "^7.0.2",
+    "@types/mongodb": "^3.5.5",
     "@types/mongoose": "^5.7.10",
+    "@types/nconf": "^0.10.0",
     "@types/node": "^13.11.1",
-    "@types/sinon": "^9.0.0",
     "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "nodemon": "^2.0.3",
     "nyc": "^15.0.1",
-    "sinon": "^9.0.2",
+    "supertest": "^4.0.2",
     "ts-node": "^8.8.2",
     "typescript": "^3.8.3"
   }
