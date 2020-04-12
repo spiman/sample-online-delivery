@@ -50,11 +50,11 @@ describe("GET /menu", () => {
         ])
 
         const expected: MenuResponse = {
-            appetizers: [{ id: '1'.padStart(24, '1'), name: 'Puffy Cheeseballs', description: 'Extra puffy', price: 400 }],
-            salads: [{ id: '2'.padStart(24, '1'), name: 'Caesar\'s salad', description: null, price: 500 }],
+            appetizers: [{ id: '1'.padStart(24, '1'), name: 'Puffy Cheeseballs', description: 'Extra puffy', price: 4.00 }],
+            salads: [{ id: '2'.padStart(24, '1'), name: 'Caesar\'s salad', description: null, price: 5.00 }],
             mains: [
-                { id: '3'.padStart(24, '1'), name: 'Cheesesteak', description: 'Kobe beef', price: 1300 },
-                { id: '4'.padStart(24, '1'), name: 'Chicken Parmesan', description: null, price: 800 }
+                { id: '3'.padStart(24, '1'), name: 'Cheesesteak', description: 'Kobe beef', price: 13.00 },
+                { id: '4'.padStart(24, '1'), name: 'Chicken Parmesan', description: null, price: 8.00 }
             ],
             drinks: []
         }
@@ -80,8 +80,8 @@ describe("GET /menu", () => {
 
         const expected: MenuResponse = {
             appetizers: [], salads: [], drinks: [], mains: [
-                { id: '1'.padStart(24, '1'), name: 'Cheesesteak', description: 'Kobe beef', price: 1200 },
-                { id: '2'.padStart(24, '1'), name: 'Chicken', description: null, price: 600 }
+                { id: '1'.padStart(24, '1'), name: 'Cheesesteak', description: 'Kobe beef', price: 12 },
+                { id: '2'.padStart(24, '1'), name: 'Chicken', description: null, price: 6 }
             ]
         }
 

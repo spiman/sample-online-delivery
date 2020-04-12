@@ -88,7 +88,7 @@ describe('orders', () => {
 
             const expected = {
                 address: 'Baker Street 221B',
-                totalPrice: 480,
+                totalPrice: 4.80,
                 items: [{ id: '3'.padStart(24, '1'), itemId: '2'.padStart(24, '1'), quantity: 1 }]
             }
 
@@ -123,7 +123,7 @@ describe('orders', () => {
             const expected = [{
                 id: '1'.padStart(24, '1'),
                 address: '221B Baker Street',
-                totalPrice: 800,
+                totalPrice: 8.00,
                 items: [
                     { id: '3'.padStart(24, '1'), itemId: '2'.padStart(24, '1'), quantity: 2 }
                 ]
